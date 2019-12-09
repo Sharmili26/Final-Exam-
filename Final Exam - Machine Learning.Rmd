@@ -1,0 +1,280 @@
+---
+title: "Final Exam- Machine Learning"
+author: "Sharmili Tandulwadkar"
+date: "12/3/2019"
+output: html_document
+---
+
+```{r}
+library(caret)
+library(class)
+library(tidyverse)
+library(factoextra)
+library(ISLR)
+
+BathSoap <- read.csv("BathSoap.csv")
+
+#Data Normalization
+BathSoap1 <- scale(BathSoap)
+
+BathSoap1 <-BathSoap1[, -1] 
+#View(BathSoap1)
+
+# Now remove all recods with missing values
+BathSoap1 <- na.omit(BathSoap1)
+
+```
+
+
+
+```{r}
+# Brand Loyalty 
+# Brand loyalty has been defined by taking maximum value from the every brand, from Br.cd. 57, 144 to Br.cd.5. It maximum value gives the Brand Loyalty of the customers for the particular brand. Others 999 defines that customer is not loyal to the particular brand. It consists of different brands.   
+
+```
+
+
+
+```{r}
+#Question 1 a)
+#Considering Purchase Behaviour factors 
+
+BathSoap2 <-BathSoap1[, c(11:18,30,46)]
+#View(BathSoap2)
+
+fviz_nbclust(BathSoap2, kmeans, method = "wss")
+#fviz_nbclust(BathSoap2, kmeans, method = "silhouette")
+
+```
+
+
+The optimal K=3
+```{r}
+#k means algorithm 
+k <- kmeans(BathSoap2, centers = 3, nstart = 25) 
+k
+# Visualize the output
+k$centers 
+k$size 
+
+#fviz_cluster(k, data = BathSoap2) # Visualize the output
+```
+
+
+
+```{r}
+set.seed(120)
+k1 <- kmeans(BathSoap2, centers = 3, nstart = 25)
+k2 <- as.data.frame(k1$centers)
+
+# Add a column for cluster number / to be also used for color
+cluster <- matrix(c("1","2","3"),nrow = 3)
+k2 <- cbind(cluster,k2)
+#View(k2)
+
+library(hrbrthemes)
+library(GGally)
+# We write two parallel plots for clarity
+ggparcoord(k2,
+    columns = 2:11, groupColumn = 1, 
+    showPoints = TRUE, 
+    title = "Parallel Coordinate Plot for BathSoap Data - K = 3",
+    alphaLines = 0.3 
+    ) 
+
+```
+
+Observations:
+
+* Cluster 1: The most brand loyal customers falls in cluster 1. It contains high average transactions per brand run and high average volume per transaction. It contains less Number of Brands and Brand Runs. Cluster 1 also contains low Average Price and low volume purchased by Others.999 brands. Which means this cluster 1 is brand loyal cluster. 
+
+*Cluster 2: It contains high number of number of brands contains, number of instances of consecutive purchase of brands, total volume, number of transactions and sum of value. 
+
+Cluster 3: The customers falls in this cluster are not brand loyal. It contains low brand loyalty.   
+This cluster also contains low total volume, low number of transactions, value and Volume transactions. This cluster contains high volume purchased by Others.999 brands.   
+
+
+
+```{r}
+#Question 1 b)
+#Considering Basis of Purchase factors 
+
+BathSoap3 <-BathSoap1[, c(19:21, 31:45)]
+#View(BathSoap3)
+
+fviz_nbclust(BathSoap3, kmeans, method = "wss")
+#fviz_nbclust(BathSoap3, kmeans, method = "silhouette")
+
+```
+
+
+
+The Optimal K=3
+```{r}
+#k means algorithm 
+k3 <- kmeans(BathSoap3, centers = 3, nstart = 25) 
+k3
+# Visualize the output
+k3$centers 
+k3$size 
+
+#fviz_cluster(k3, data = BathSoap3) # Visualize the output
+```
+```{r}
+set.seed(120)
+k4 <- kmeans(BathSoap3, centers = 3, nstart = 25)
+k5 <- as.data.frame(k4$centers)
+
+
+# Add a column for cluster number / to be also used for color
+cluster <- matrix(c("1","2","3"),nrow = 3)
+k5 <- cbind(cluster,k5)
+#View(k5)
+
+
+# We write two parallel plots for clarity
+ggparcoord(k5,
+    columns = 2:18, groupColumn = 1, 
+    showPoints = TRUE, 
+    title = "Parallel Coordinate Plot for BathSoap Data - K = 3",
+    alphaLines = 0.3 
+    ) 
+```
+
+Observations:
+
+* Cluster 1: This cluster contains high percent of volume purchased under no promotion and high volume purchased under the price category 2 & 4. It contains high percent of volume purchased under the product propsition category 5 & 11. It contains low percent of volume purchased in other promotions. 
+
+*Cluster 2: It contains low percent of volume purchased under promotion code 6, low volume purchased under the price category 1, 2 & 4, low percent of volume purchased under the product propsition category from 5 to 13. It only contains high volume purchased under the price category 3, high percent of volume purchased under the product propsition category 14.
+
+Cluster 3: It contains low percent of volume purchased under no promotion, low volume purchased under the price category 3 and low percent of volume purchased under the product propsition category 14. It contains high low percent of volume purchased under promotion code 6, high percent of volume purchased in other promotions, high volume purchased under the price category 1, high percent of volume purchased under the product propsition category from 6 to 10, 12 & 13.
+
+
+
+```{r}
+#Question 1c)
+#Considering factors that describe both purchase behavior and basis of purchase
+
+BathSoap4 <-BathSoap1[, c(11:21, 30:46)]
+#View(BathSoap4)
+
+fviz_nbclust(BathSoap4, kmeans, method = "wss")
+#fviz_nbclust(BathSoap4, kmeans, method = "silhouette")
+```
+
+
+
+The optimql K=3
+```{r}
+#k means algorithm 
+k6 <- kmeans(BathSoap4, centers = 3, nstart = 25) 
+k6
+# Visualize the output
+k6$centers 
+k6$size 
+
+#fviz_cluster(k6, data = BathSoap4) # Visualize the output
+```
+
+```{r}
+set.seed(120)
+k7 <- kmeans(BathSoap4, centers = 3, nstart = 25)
+k8 <- as.data.frame(k7$centers)
+
+
+# Add a column for cluster number / to be also used for color
+cluster <- matrix(c("1","2","3"),nrow = 3)
+k8 <- cbind(cluster,k8)
+#View(k8)
+
+
+# We write two parallel plots for clarity
+ggparcoord(k8,
+    columns = 2:28, groupColumn = 1, 
+    showPoints = TRUE, 
+    title = "Parallel Coordinate Plot for BathSoap Data - K = 3",
+    alphaLines = 0.3 
+    ) 
+```
+
+
+Observations:
+
+* Cluster 1: In this cluster customers are not brand loyal. This cluster contains high number of brands purchased, brand runs, high number of transactions, value, high average price, high percent of volume purchased under promotion code 6, high Others.999 brand, high volume purchased under the price category 1, high percent of volume purchased under the product propsition category from 6 to 10, 12, 13 & 15. 
+
+It contains low tarns/brand runs, vol/trans (average volume per transaction), percent of volume purchased under no promotion, low volume purchased under the price category 3, low percent of volume purchased under the product propsition category 14 and low Brand Loyalty. 
+
+
+*Cluster 2: It contains high total volume, high volume purchased under the price category 2 & 4, high percent of volume purchased under the product propsition category 5 & 11.
+
+It contains low percent of volume purchased under other promotions, low percent of volume purchased under the product propsition category 9 & 14. 
+
+
+Cluster 3: The most brand loyal customers are falls in this cluster. It contains high brand runs, volume transactions, high percent of volume purchased under no promotions, high percent of volume purchased under other promotions, high volume purchased under the price category 3, high percent of volume purchased under the product propsition category 14 and high brand loyalty. 
+It contains low number of brands, low brand runs, low number of transactions, low, value, low average price, low percent of volume purchased under promotion code 6, low others 999 brand, low volume purchased under the price category 1 & 4, low percent of volume purchased under the product propsition category 6, 7, 8, 10, 11, 12, 13 & 15. 
+
+```{r}
+#Considering factors that describe demographics
+
+BathSoap5 <-BathSoap1[, c(1:10)]
+#View(BathSoap5)
+
+fviz_nbclust(BathSoap5, kmeans, method = "wss")
+#fviz_nbclust(BathSoap5, kmeans, method = "silhouette")
+
+
+```
+
+The optimal K=3
+```{r}
+#k means algorithm 
+k9 <- kmeans(BathSoap5, centers = 3, nstart = 25) 
+k9
+# Visualize the output
+k9$centers 
+k9$size 
+
+#fviz_cluster(k9, data = BathSoap5) # Visualize the output
+```
+```{r}
+set.seed(120)
+k10 <- kmeans(BathSoap5, centers = 3, nstart = 25)
+k11 <- as.data.frame(k10$centers)
+
+
+# Add a column for cluster number / to be also used for color
+cluster <- matrix(c("1","2","3"),nrow = 3)
+k11 <- cbind(cluster,k11)
+#View(k11)
+
+
+# We write two parallel plots for clarity
+ggparcoord(k11,
+    columns = 2:11, groupColumn = 1, 
+    showPoints = TRUE, 
+    title = "Parallel Coordinate Plot for BathSoap Data - K = 3",
+    alphaLines = 0.3 
+    ) 
+```
+
+* Cluster 1: This cluster contains high AGE (age of homemaker), high EDU and high affluence index. 
+It also contains low SEC (socioeconomic index). 
+
+*Cluster 2: It contains high SEC, FEH, MT and HS. It also contains low CHILD (presence of chlidren in household)
+
+Cluster 3: It contains low FEH, MT, SEX, AGE, EDU, HS, CS and Affluence Index. It only contains high CHILD (presence of chlidren in household)
+
+```{r}
+
+#Question 2
+# Based on the both purchase behavior and basis of purchase
+
+ # * Cluster 1: In this cluster customers are not brand loyal. This cluster contains high number of brands purchased, brand runs, high number of transactions, value, high average price, high percent of volume purchased under promotion code 6, high Others.999 brand, high volume purchased under the price category 1, high percent of volume purchased under the product propsition category from 6 to 10, 12, 13 & 15. 
+
+#It contains low tarns/brand runs, vol/trans (average volume per transaction), percent of volume purchased under no promotion, low volume purchased under the price category 3, low percent of volume purchased under the product propsition category 14 and low Brand Loyalty. 
+
+#Therefore we should focus on Cluster 1 to incarese the brand loyalty of the customer. This customers have high percent of volume purchased under promotions, it means they we are positive towards promotional offers. We can attract them by offering promotional codes and discounts.  
+
+
+```
+
